@@ -44,8 +44,10 @@ public class BaseActivity extends AppCompatActivity {
 
         switch(item.getItemId()) {
             case R.id.mnu_action_configuration:
-                Intent overheadIntent = new Intent(this, OverheadActivity.class);
-                startActivity(overheadIntent);
+//                Intent overheadIntent = new Intent(this, OverheadActivity.class);
+//                startActivity(overheadIntent);
+                Intent studioIntent = new Intent(this, StudioTypeActivity.class);
+                startActivity(studioIntent);
                 break;
 
             case R.id.mnu_action_help:
