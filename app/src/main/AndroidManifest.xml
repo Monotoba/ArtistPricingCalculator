@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.randy.artistpricingcalculator">
+
+    <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" -->
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".OverheadSettingsActivity"
+            android:label="@string/title_activity_overhead_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.randy.artistpricingcalculator.MainActivity" />
+        </activity>
+        <activity
+            android:name=".MarketingSettingsActivity"
+            android:label="@string/title_activity_marketing_settings"
+            android:parentActivityName=".OverheadSettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.randy.artistpricingcalculator.OverheadSettingsActivity" />
+        </activity>
+        <activity
+            android:name=".LaborSettingsActivity"
+            android:label="@string/title_activity_marketing_settings"
+            android:parentActivityName=".MarketingSettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.randy.artistpricingcalculator.MarketingSettingsActivity" />
+        </activity>
+        <activity android:name=".OverheadActivity" />
+        <activity android:name=".AddItemActivity" />
+        <activity android:name=".EditItemActivity" />
+        <activity android:name=".BaseActivity" />
+        <activity android:name=".MarketingActivity" />
+        <activity android:name=".LaborActivity" />
+        <activity android:name=".MaterialsActivity" />
+        <activity android:name=".PackagingActivity" />
+        <activity android:name=".ResultActivity" />
+        <activity android:name=".MainHelpActivity" />
+        <activity android:name=".OverheadHelpActivity" />
+        <activity android:name=".MarketingHelpActivity" />
+        <activity android:name=".LaborHelpActivity" />
+        <activity android:name=".MaterialsHelpActivity" />
+        <activity android:name=".PackagingHelpActivity" />
+        <activity android:name=".ResultsHelpActivity" />
+        <activity android:name=".HomeStudioCalcActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+    </application>
+
+</manifest>
