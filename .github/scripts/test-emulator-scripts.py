@@ -73,6 +73,11 @@ esac''',
             diagnostic = root / "app/build/reports/emulator/logcat.txt"
             return result, diagnostic.read_text() if diagnostic.exists() else ""
 
+    def test_ci_records_release_dependency_graph(self):
+        workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
+        self.assertIn("--configuration releaseRuntimeClasspath", workflow)
+        self.assertIn("app/build/reports/dependencies/release-runtime.txt", workflow)
+
     def test_ci_archives_apk_and_checksum_for_manual_testing(self):
         workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
         self.assertIn("sha256sum app/build/outputs/apk/debug/app-debug.apk", workflow)
