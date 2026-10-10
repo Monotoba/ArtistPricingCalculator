@@ -14,13 +14,21 @@ class EmulatorScriptsTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             avd = root / "avds/modern.avd"
-            avd.mkdir(parents=True)
-            (avd / "config.ini").touch()
             sdk = root / "sdk/emulator"
             sdk.mkdir(parents=True)
             commands = {
                 root / "sdkmanager": "exit 0",
-                root / "avdmanager": "cat >/dev/null",
+                root / "avdmanager": '''cat >/dev/null
+while (( $# )); do
+  if [[ "$1" == --path ]]; then
+    mkdir -p "$2"
+    touch "$2/config.ini"
+    exit 0
+  fi
+  shift
+done
+echo 'Explicit AVD path is required' >&2
+exit 1''',
                 root / "adb": '''case "$*" in
 *"getprop sys.boot_completed"*)
   if [[ "$TEST_MODE" == early-exit ]]; then echo 0; else echo 1; fi ;;
