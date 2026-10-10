@@ -1,0 +1,71 @@
+name: Attach verified beta APK to existing prerelease
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/publish-beta-assets.yml
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  upload-beta-assets:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Verify exact release tag and existing prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="Monotoba/ArtistPricingCalculator"
+          expected_sha="4a5e9722465d7cee1b274bd0108d126a1e398296"
+          actual_sha="$(gh api "repos/$repo/git/ref/tags/v0.1.0-beta.1" --jq '.object.sha')"
+          test "$actual_sha" = "$expected_sha" || { echo "Release tag changed; refusing upload"; exit 1; }
+          gh api "repos/$repo/releases/tags/v0.1.0-beta.1" --jq '.prerelease' | grep -qx true
+          existing="$(gh release view v0.1.0-beta.1 --repo "$repo" --json assets --jq '.assets | length')"
+          test "$existing" = "0" || { echo "Release already has assets; refusing overwrite"; exit 1; }
+
+      - name: Download APK from the verified tagged-commit build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="Monotoba/ArtistPricingCalculator"
+          source_run=38079789916
+          run_sha="$(gh api "repos/$repo/actions/runs/$source_run" --jq '.head_sha')"
+          run_result="$(gh api "repos/$repo/actions/runs/$source_run" --jq '.conclusion')"
+          test "$run_sha" = "4a5e9722465d7cee1b274bd0108d126a1e398296"
+          test "$run_result" = "success"
+          mkdir -p downloaded dist
+          gh run download "$source_run" --repo "$repo" --name debug-apk-api-26 --dir downloaded
+          apk="$(find downloaded -type f -name app-debug.apk -print -quit)"
+          test -n "$apk"
+          cp "$apk" dist/artist-pricing-calculator-v0.1.0-beta.1-debug.apk
+          expected="5067955f04772fa248d7d8b5dc2d84493f7345998951a49d164eb3ec268955b3"
+          actual="$(sha256sum dist/artist-pricing-calculator-v0.1.0-beta.1-debug.apk | awk '{print $1}')"
+          test "$actual" = "$expected" || { echo "APK checksum mismatch; refusing upload"; exit 1; }
+          (cd dist && sha256sum artist-pricing-calculator-v0.1.0-beta.1-debug.apk > SHA256SUMS.txt)
+          cat dist/SHA256SUMS.txt
+
+      - name: Attach APK and checksum to published prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload v0.1.0-beta.1 \
+            dist/artist-pricing-calculator-v0.1.0-beta.1-debug.apk \
+            dist/SHA256SUMS.txt \
+            --repo Monotoba/ArtistPricingCalculator
+
+      - name: Confirm both release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view v0.1.0-beta.1 --repo Monotoba/ArtistPricingCalculator --json assets \
+            --jq '.assets[].name' | sort | tee /tmp/actual-assets.txt
+          printf '%s\n' SHA256SUMS.txt artist-pricing-calculator-v0.1.0-beta.1-debug.apk \
+            | sort | diff -u - /tmp/actual-assets.txt
