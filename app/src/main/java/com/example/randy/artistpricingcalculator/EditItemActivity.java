@@ -54,6 +54,11 @@ public class EditItemActivity extends BaseActivity {
         final double amount;
         try {
             name = CostEntryValidator.requireName(etName.getText().toString());
+        } catch (IllegalArgumentException error) {
+            etName.setError(error.getMessage());
+            return;
+        }
+        try {
             amount = CostEntryValidator.parseAmount(etAmount.getText().toString());
         } catch (IllegalArgumentException error) {
             etAmount.setError(error.getMessage());
