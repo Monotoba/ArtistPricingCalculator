@@ -19,8 +19,14 @@ jobs:
         include:
           - api-level: 26
             target: default
+            ram-size: 1536M
+            heap-size: 256M
+            gpu: swiftshader_indirect
           - api-level: '37.0'
             target: google_apis
+            ram-size: 4096M
+            heap-size: 576M
+            gpu: software
     steps:
       - uses: actions/checkout@v5
         with:
@@ -55,6 +61,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           target: ${{ matrix.target }}
+          ram-size: ${{ matrix.ram-size }}
+          heap-size: ${{ matrix.heap-size }}
+          emulator-options: -no-window -gpu ${{ matrix.gpu }} -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: bash .github/scripts/run-instrumented-tests.sh
       - name: Upload validation reports
