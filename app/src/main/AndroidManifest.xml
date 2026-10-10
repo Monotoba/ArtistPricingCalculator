@@ -16,30 +16,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".OverheadSettingsActivity"
-            android:label="@string/title_activity_overhead_settings"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.randy.artistpricingcalculator.MainActivity" />
-        </activity>
-        <activity
-            android:name=".MarketingSettingsActivity"
-            android:label="@string/title_activity_marketing_settings"
-            android:parentActivityName=".OverheadSettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.randy.artistpricingcalculator.OverheadSettingsActivity" />
-        </activity>
-        <activity
-            android:name=".LaborSettingsActivity"
-            android:label="@string/title_activity_marketing_settings"
-            android:parentActivityName=".MarketingSettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.randy.artistpricingcalculator.MarketingSettingsActivity" />
-        </activity>
         <activity android:name=".OverheadActivity" />
         <activity android:name=".AddItemActivity" />
         <activity android:name=".EditItemActivity" />
