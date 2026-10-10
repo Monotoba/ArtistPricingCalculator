@@ -28,10 +28,14 @@ public class WorkflowNavigationTest {
         try {
             instrumentation.runOnMainSync(new Runnable() {
                 @Override public void run() {
-                    if (current instanceof LaborActivity) ((LaborActivity) current).onNext(null);
-                    else if (current instanceof MaterialsActivity) ((MaterialsActivity) current).onNext(null);
-                    else if (current instanceof PackagingActivity) ((PackagingActivity) current).onNext(null);
+                    final int buttonId;
+                    if (current instanceof LaborActivity) buttonId = R.id.tv_labor_next;
+                    else if (current instanceof MaterialsActivity) buttonId = R.id.tv_materials_next;
+                    else if (current instanceof PackagingActivity) buttonId = R.id.tv_packaging_next;
                     else throw new AssertionError("Unsupported navigation source");
+                    assertTrue("Next control must be visible", current.findViewById(buttonId).isShown());
+                    assertTrue("Next control must accept clicks",
+                            current.findViewById(buttonId).performClick());
                 }
             });
             T result = expected.cast(instrumentation.waitForMonitorWithTimeout(monitor, 10000));
