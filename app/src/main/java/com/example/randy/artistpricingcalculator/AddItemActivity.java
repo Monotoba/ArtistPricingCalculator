@@ -48,9 +48,14 @@ public class AddItemActivity extends BaseActivity {
         final double value;
         try {
             name = CostEntryValidator.requireName(name);
+        } catch (IllegalArgumentException error) {
+            etName.setError(error.getMessage());
+            return;
+        }
+        try {
             value = CostEntryValidator.parseAmount(amount);
         } catch (IllegalArgumentException error) {
-            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+            etAmount.setError(error.getMessage());
             return;
         }
         Item item = new Item(mRecordType, name, value);
