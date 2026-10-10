@@ -45,7 +45,7 @@ public class CostEntryFlowTest {
         instrumentation.waitForIdleSync();
     }
 
-    @Test public void addEditDeletePropagatesThroughDatabaseAndResults() {
+    @Test public void addEditDeletePersistValidAmounts() {
         ItemDbHelper db = new ItemDbHelper(instrumentation.getTargetContext());
         String name = "Cost flow " + UUID.randomUUID();
         Activity add = null, edit = null;
@@ -72,6 +72,7 @@ public class CostEntryFlowTest {
             assertNotNull("Valid amount must be saved", inserted);
             assertEquals(12.5, inserted.mValue, 0.00001);
             id = inserted.mID;
+            final int editedId = id;
             finish(add);
             add = null;
 
@@ -84,7 +85,7 @@ public class CostEntryFlowTest {
                 }
             });
             assertEquals("Invalid edit must leave stored value unchanged",
-                    12.5, db.getItemById(id).mValue, 0.00001);
+                    12.5, db.getItemById(editedId).mValue, 0.00001);
             instrumentation.runOnMainSync(new Runnable() {
                 @Override public void run() {
                     ((EditText)editScreen.findViewById(R.id.tv_item_amount)).setText("15.75");
@@ -96,7 +97,7 @@ public class CostEntryFlowTest {
             finish(edit);
             edit = null;
 
-            // Verify that the persisted record is recognized by the same pricing engine as Results.
+            // Confirm that the updated row is returned by the Results screen's data source.
             boolean found = false;
             for (Item item : db.getAllItems()) {
                 if (item.mID == id) {
