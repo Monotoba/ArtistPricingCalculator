@@ -3,6 +3,7 @@ package com.example.randy.artistpricingcalculator;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.RenamingDelegatingContext;
 
 import com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data.Item;
 import com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data.ItemContract;
@@ -25,8 +26,9 @@ public class ItemDbHelperTest {
 
     @Before
     public void setUp() {
-        // Use the test APK's context, not the application's existing database.
-        context = InstrumentationRegistry.getContext();
+        // Prefix all database names in the writable app context to isolate test data.
+        context = new RenamingDelegatingContext(
+                InstrumentationRegistry.getTargetContext(), "regression_");
         context.deleteDatabase(ItemDbHelper.DATABASE_NAME);
         helper = new ItemDbHelper(context);
         helper.getWritableDatabase().delete(ItemContract.ItemEntry.TABLE_NAME, null, null);
