@@ -118,4 +118,37 @@ public class ItemDbHelperTest {
         assertEquals(1, helper.getItemCount());
         assertTrue(helper.getAllItems().get(0).mPersist);
     }
+
+    @Test
+    public void failedBulkInsertionRollsBackEarlierRows() {
+        ArrayList<Item> items = new ArrayList<>();
+        items.add(sample("First", true));
+        items.add(new Item("Unknown", "Invalid", 1));
+        try {
+            helper.addItems(items);
+            fail("Unsupported item type must be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertTrue(helper.getAllItems().isEmpty());
+        }
+        helper.addItem(sample("After rollback", false));
+        assertEquals(1, helper.getItemCount());
+    }
+
+    @Test
+    public void invalidTypesAreHandledWithoutParsingNullOrChangingRows() {
+        assertNull(helper.getItemsByType(null));
+        assertNull(helper.getItemsByType("Unknown"));
+        try {
+            helper.getItemByTypeCount(null);
+            fail("Invalid count type must be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertEquals(0, helper.getItemCount());
+        }
+        try {
+            helper.updateItem(new Item("Unknown", "Invalid", 1));
+            fail("Invalid update must be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertEquals(0, helper.getItemCount());
+        }
+    }
 }
