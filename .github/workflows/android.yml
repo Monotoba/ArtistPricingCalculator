@@ -10,8 +10,17 @@ permissions:
 
 jobs:
   legacy-build:
+    name: Android API ${{ matrix.api-level }}
     runs-on: ubuntu-22.04
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api-level: 26
+            target: default
+          - api-level: 37
+            target: google_apis
     steps:
       - uses: actions/checkout@v5
         with:
@@ -39,19 +48,19 @@ jobs:
       - name: Enable emulator acceleration
         run: |
           sudo chmod 666 /dev/kvm
-      - name: Run SQLite regression tests on Android 26
+      - name: Run database and launch tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 26
+          api-level: ${{ matrix.api-level }}
           arch: x86_64
-          target: default
+          target: ${{ matrix.target }}
           disable-animations: true
           script: JAVA_HOME="$JAVA_HOME_8_X64" PATH="$JAVA_HOME_8_X64/bin:$PATH" ./gradlew --no-daemon --stacktrace connectedDebugAndroidTest
       - name: Upload validation reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-validation-reports
+          name: android-validation-reports-api-${{ matrix.api-level }}
           path: |
             app/build/reports
             app/build/test-results
