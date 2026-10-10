@@ -16,7 +16,7 @@ An unfinished Android app intended to help artists organize labor, materials, ov
 - SQLite item storage and sample cost records.
 - Historical design assets in [docs](docs).
 - A Gradle wrapper and Android Studio project.
-- Ten SQLite regression tests and a home-screen launch test, plus the original generated example tests. Pricing and complete UI behavior are not yet tested.
+- Ten SQLite regression tests, two database-isolation checks, and a home-screen launch test, plus the original generated example tests. Pricing and complete UI behavior are not yet tested.
 
 ## Build status
 

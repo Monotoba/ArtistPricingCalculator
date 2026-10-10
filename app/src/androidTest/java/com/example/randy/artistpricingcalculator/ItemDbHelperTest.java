@@ -1,9 +1,9 @@
 package com.example.randy.artistpricingcalculator;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.RenamingDelegatingContext;
 
 import com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data.Item;
 import com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data.ItemContract;
@@ -27,7 +27,7 @@ public class ItemDbHelperTest {
     @Before
     public void setUp() {
         // Prefix all database names in the writable app context to isolate test data.
-        context = new RenamingDelegatingContext(
+        context = new DatabaseTestContext(
                 InstrumentationRegistry.getTargetContext(), "regression_");
         context.deleteDatabase(ItemDbHelper.DATABASE_NAME);
         helper = new ItemDbHelper(context);
@@ -42,6 +42,29 @@ public class ItemDbHelperTest {
 
     private Item sample(String name, boolean persist) {
         return new Item(ItemContract.ITEM_TYPE_MATERIALS, name, 12.75, persist, 0);
+    }
+
+    @Test
+    public void helperDatabaseUsesAnIsolatedPath() {
+        String actualPath = helper.getWritableDatabase().getPath();
+        assertEquals(context.getDatabasePath(ItemDbHelper.DATABASE_NAME).getAbsolutePath(), actualPath);
+        assertNotEquals(InstrumentationRegistry.getTargetContext()
+                .getDatabasePath(ItemDbHelper.DATABASE_NAME).getAbsolutePath(), actualPath);
+    }
+
+    @Test
+    public void testContextCreatesAndDeletesPrefixedDatabases() {
+        String name = "direct-context.db";
+        try {
+            try (SQLiteDatabase database = context.openOrCreateDatabase(name, Context.MODE_PRIVATE, null)) {
+                assertEquals(context.getDatabasePath(name).getAbsolutePath(), database.getPath());
+                assertTrue(context.getDatabasePath(name).exists());
+            }
+            assertTrue(context.deleteDatabase(name));
+            assertFalse(context.getDatabasePath(name).exists());
+        } finally {
+            context.deleteDatabase(name);
+        }
     }
 
     @Test

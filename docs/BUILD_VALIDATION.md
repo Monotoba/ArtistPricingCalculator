@@ -27,6 +27,8 @@ Five SDK-independent CI launcher tests cover an emulator available only at its S
 
 Ten database tests cover counts, empty reads, Unicode and quotes, persistence flags, single and bulk insertion, empty bulk input, updates, deletion, missing IDs, repeated reads, reopening, transaction rollback, and invalid item categories.
 
+Two additional fixture tests verify that SQLiteOpenHelper opens the prefixed test database instead of the application's database, and that direct database creation/deletion uses the same prefixed path. The test-only `ContextWrapper` replaces the obsolete `android.test.RenamingDelegatingContext`; application database code is unchanged.
+
 Bulk insertion is atomic: an invalid row rolls back earlier rows. Unsupported count/update/insert types raise `IllegalArgumentException`; unsupported list queries retain their existing `null` result. Missing-ID lookup returns `null`. Callers must handle missing records before using them; comprehensive activity error handling remains future work.
 
 The pre-fix baseline reproduced seven failing database tests on Android 26. The historical build subsequently passed all 12 instrumented tests on API 26 and API 37. The modernized build is checked against the same suite. Local execution in the cleanup environment is blocked by unavailable Gradle downloads and absence of an Android SDK, so executable application validation takes place in GitHub Actions.
