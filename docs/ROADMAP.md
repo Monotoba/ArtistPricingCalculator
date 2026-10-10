@@ -1,6 +1,6 @@
 # Roadmap to an initial alpha
 
-Status: work in progress. No delivery date is committed.
+Status: work in progress. Historical build validation and database regression coverage have been added; current Android compatibility and pricing remain unfinished. No delivery date is committed.
 
 ## 1. Reproduce the build
 
@@ -8,7 +8,7 @@ Establish a working Java/Gradle/Android SDK environment. Evaluate repository and
 
 ## 2. Stabilize item storage
 
-Add regression tests before fixing database behavior. Review cursor lifetime, missing records, invalid item types, boolean persistence, and bulk insertion. The current helper includes `substring(0, -1)` in bulk insertion and `Integer.parseInt(null)` for invalid types; these paths need tests and corrections.
+Add regression tests before fixing database behavior. Review cursor lifetime, missing records, invalid item types, boolean persistence, and bulk insertion. The helper now uses bound inserts in a transaction, closes read cursors, handles missing IDs, and preserves persistence flags. Ten regression tests cover these paths, including rollback and invalid categories. Expand coverage as the application develops.
 
 Review destructive database upgrade behavior before supporting existing user data.
 
