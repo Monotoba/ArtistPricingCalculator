@@ -174,4 +174,18 @@ public class ItemDbHelperTest {
             assertEquals(0, helper.getItemCount());
         }
     }
+
+    @Test
+    public void unsupportedUpgradeDoesNotDeleteExistingRecords() {
+        helper.addItem(sample("Preserve this artwork", true));
+        SQLiteDatabase database = helper.getWritableDatabase();
+        try {
+            helper.onUpgrade(database, 1, 2);
+            fail("Unimplemented migration should fail without deleting rows");
+        } catch (IllegalStateException expected) {
+            assertTrue(expected.getMessage().contains("data-preserving migration"));
+        }
+        assertEquals(1, helper.getItemCount());
+        assertEquals("Preserve this artwork", helper.getAllItems().get(0).mName);
+    }
 }

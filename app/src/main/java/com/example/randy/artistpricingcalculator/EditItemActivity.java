@@ -31,6 +31,10 @@ public class EditItemActivity extends BaseActivity {
         mID = getIntent().getIntExtra("ID", -1);
         mEditItem = mDbHelper.getItemById(mID);
 
+        if (mEditItem == null) {
+            finish();
+            return;
+        }
         // Populate the EditText Views
         EditText etName = (EditText) findViewById(R.id.tv_item_name);
         EditText etAmount = (EditText) findViewById(R.id.tv_item_amount);
@@ -46,8 +50,22 @@ public class EditItemActivity extends BaseActivity {
         // Populate the EditText Views
         EditText etName = (EditText) findViewById(R.id.tv_item_name);
         EditText etAmount = (EditText) findViewById(R.id.tv_item_amount);
-        mEditItem.mName = etName.getText().toString();
-        mEditItem.mValue = Double.valueOf(etAmount.getText().toString());
+        final String name;
+        final double amount;
+        try {
+            name = CostEntryValidator.requireName(etName.getText().toString());
+        } catch (IllegalArgumentException error) {
+            etName.setError(error.getMessage());
+            return;
+        }
+        try {
+            amount = CostEntryValidator.parseAmount(etAmount.getText().toString());
+        } catch (IllegalArgumentException error) {
+            etAmount.setError(error.getMessage());
+            return;
+        }
+        mEditItem.mName = name;
+        mEditItem.mValue = amount;
 
         mDbHelper.updateItem(mEditItem);
 

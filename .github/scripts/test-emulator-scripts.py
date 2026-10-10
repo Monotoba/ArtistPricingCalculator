@@ -73,6 +73,28 @@ esac''',
             diagnostic = root / "app/build/reports/emulator/logcat.txt"
             return result, diagnostic.read_text() if diagnostic.exists() else ""
 
+    def test_workflow_uses_node24_compatible_actions(self):
+        workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
+        for action in (
+            "android-actions/setup-android@v4",
+            "gradle/actions/wrapper-validation@v6",
+            "actions/upload-artifact@v7",
+        ):
+            self.assertIn("uses: " + action, workflow)
+        for deprecated in (
+            "android-actions/setup-android@v3",
+            "gradle/actions/wrapper-validation@v4",
+            "actions/upload-artifact@v4",
+        ):
+            self.assertNotIn(deprecated, workflow)
+
+    def test_workflow_avoids_duplicate_pr_branch_runs(self):
+        workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
+        self.assertIn("branches: [master]", workflow)
+        self.assertIn("pull_request:", workflow)
+        self.assertIn("cancel-in-progress: true", workflow)
+        self.assertIn("github.event.pull_request.number || github.ref", workflow)
+
     def test_sdk_executable_works_without_emulator_on_path(self):
         result, diagnostic = self.run_launcher()
         self.assertEqual(0, result.returncode, result.stderr)

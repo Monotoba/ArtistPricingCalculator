@@ -45,7 +45,20 @@ public class AddItemActivity extends BaseActivity {
         TextView etAmount = (TextView) findViewById(R.id.tv_item_amount);
         String name = etName.getText().toString();
         String amount = etAmount.getText().toString();
-        Item item = new Item(mRecordType, name, Double.valueOf(amount));
+        final double value;
+        try {
+            name = CostEntryValidator.requireName(name);
+        } catch (IllegalArgumentException error) {
+            etName.setError(error.getMessage());
+            return;
+        }
+        try {
+            value = CostEntryValidator.parseAmount(amount);
+        } catch (IllegalArgumentException error) {
+            etAmount.setError(error.getMessage());
+            return;
+        }
+        Item item = new Item(mRecordType, name, value);
         mDbHelper.addItem(item);
         Log.d(TAG, "The RecordType passed in was: " + mRecordType);
         Toast.makeText(this, "The Data passed in was: " + mRecordType, Toast.LENGTH_SHORT).show();

@@ -32,8 +32,8 @@ public class ItemDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(ItemContract.SQL_DELETE_ITEMS);
-        onCreate(db);
+        throw new IllegalStateException("No data-preserving migration from version "
+                + oldVersion + " to " + newVersion + " is implemented.");
     }
 
     @Override

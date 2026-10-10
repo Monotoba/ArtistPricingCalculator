@@ -10,7 +10,7 @@ Establish a working Java/Gradle/Android SDK environment. Evaluate repository and
 
 Add regression tests before fixing database behavior. Review cursor lifetime, missing records, invalid item types, boolean persistence, and bulk insertion. The helper now uses bound inserts in a transaction, closes read cursors, handles missing IDs, and preserves persistence flags. Ten regression tests cover these paths, including rollback and invalid categories. Expand coverage as the application develops.
 
-Review destructive database upgrade behavior before supporting existing user data.
+Unsupported database upgrades now fail without deleting existing rows; a versioned, data-preserving migration must still be implemented before raising the schema version.
 
 Acceptance: CRUD and bulk insertion work with empty data, Unicode names, quotes, and invalid input; resources are closed correctly and migrations preserve intended data.
 
@@ -23,6 +23,9 @@ Twelve unit tests cover worked examples, all categories, zero costs, fractional 
 Allocation remains manual: the app does not automatically convert recurring expenses into per-artwork costs. Existing double-valued records retain their precision limits. Full workflow verification remains the next release gate.
 
 ## 4. Verify the artist workflow
+
+Cost-entry validation and add/edit/delete persistence regression tests are under review in PR #9. These are not yet sufficient to claim full end-to-end Results coverage. Do not release until the PR passes both emulator matrices and the actual full UI path is validated.
+
 
 Exercise adding, editing, and deleting costs; settings; navigation; rotation; persistence; and results on an emulator or device. Add meaningful instrumented tests and a manual checklist. Publish screenshots only from a running app, with sample data.
 

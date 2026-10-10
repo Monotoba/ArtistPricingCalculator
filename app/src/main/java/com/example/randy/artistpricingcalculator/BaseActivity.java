@@ -60,11 +60,12 @@ public class BaseActivity extends AppCompatActivity {
 
             case R.id.mnu_action_settings:
                 onSettings();
+                break;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     protected void onSettings() {
