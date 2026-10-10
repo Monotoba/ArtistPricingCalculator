@@ -1,19 +1,21 @@
-# Release checklist
+# Beta release checklist
 
-## Source-only beta scope
+## GitHub beta: source archives and debug APK
 
-The first public milestone is a **source-only GitHub beta**, not an installable Android application. No APK/AAB is provided, signed, or distributed. No app-store submission is planned. Physical-device tests, signing, and installable package license compliance are **not beta publication gates** because no installable package is being published; they remain gates for any future binary distribution.
+The first public milestone is a **GitHub prerelease** containing GitHub-generated ZIP/TAR.GZ source archives and a clearly labeled, experimental **debug APK**. No app-store submission, AAB or production-signed APK is planned. Device testing and artwork/license provenance remain relevant because an executable is being distributed.
 
-- [x] Record source-only scope, experimental status, limitations, and no APK distribution in README and beta notes.
-- [ ] Confirm passing CI for the exact source commit being tagged (or identify and disclose any unverified changes).
-- [ ] Verify redistribution permissions for **all source-repository assets** (especially historical images under docs and bundled icons). Source archive publication is still redistribution; see issue #11.
-- [ ] Create Git tag `v0.1.0-beta.1` pointing to the verified source commit.
-- [ ] Create a GitHub Release marked **pre-release** using `docs/BETA_RELEASE_NOTES.md` as notes, with **no attached APK/AAB**. GitHub supplies source archives.
-- [ ] Confirm the release page, tagged commit, downloadable source archives, and lack of installer assets.
+- [x] Document both Android Studio self-build and optional debug APK installation.
+- [ ] Verify final CI passes on **both API 26 and API 37** for the exact release commit.
+- [ ] Verify source-repository and APK-bundled assets may be redistributed; resolve issue #11 or explicitly remove/replace assets of uncertain provenance.
+- [ ] Confirm debug APK originates from that same release commit and verify the signed APK, package name, debuggable status and SHA-256 checksum.
+- [ ] Test the attached debug APK on a real Android device (issue #13), including first-run, core pricing flow and persisted test data, or clearly record the untested status and the decision to accept that beta risk.
+- [ ] Ensure signing-key/upgrades and sensitive-data caveats are prominently documented; a CI debug key can change across workflows.
+- [ ] Create tag `v0.1.0-beta.1` from the validated commit and publish a GitHub **pre-release** with source archives and `artist-pricing-calculator-v0.1.0-beta.1-debug.apk` plus SHA-256 checksum.
+- [ ] Confirm GitHub Assets, source archive contents, release text, tag and published checksum match the validated commit.
 
-## Future APK distribution (not part of source beta)
+## Later production-signed APK distribution (not planned)
 
-This separate checklist applies only if a signed APK or other installable artifact is ever distributed.
+This separate checklist remains for any eventual production-signed distributable and is **not** a claim that store distribution is planned.
 
 ## Required checks
 
@@ -33,4 +35,4 @@ This separate checklist applies only if a signed APK or other installable artifa
 
 This is a historical Android/Java project. Current CI uses API 26 and API 37 emulators, but minSdk remains 19 and targetSdk remains 26. AndroidX migration alone does not establish current Play Store eligibility. Sample costs inserted on initial database creation are illustrative, not real per-artwork estimates. The production database upgrade code explicitly refuses unknown schema migrations to prevent silent data loss; no data-preserving schema version migration is implemented yet.
 
-Publishing a source-only beta is distinct from distributing an APK or publishing to Google Play. An installable future beta must satisfy the separate APK checks above.
+Publishing an experimental debug APK through GitHub is different from publishing a production-signed APK or submitting an app to Google Play. The release checklist above applies to this experimental distribution.
