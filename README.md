@@ -16,13 +16,13 @@ An unfinished Android app intended to help artists organize labor, materials, ov
 - SQLite item storage and sample cost records.
 - Historical design assets in [docs](docs).
 - A Gradle wrapper and Android Studio project.
-- Ten SQLite regression tests, plus the original generated example tests. Pricing and complete UI behavior are not yet tested.
+- Ten SQLite regression tests and a home-screen launch test, plus the original generated example tests. Pricing and complete UI behavior are not yet tested.
 
 ## Build status
 
 The checked-in configuration uses Android Gradle Plugin 3.0.1, Gradle 4.1, Android SDK 26, and the Android Support Library. Its minimum SDK is 19 and target SDK is 26. These are historical configuration values, not verified compatibility claims.
 
-GitHub Actions validates the historical build with Java 8 and an Android 26 emulator. Java 17 is used separately for SDK setup. The project still references JCenter. Passing this workflow does not establish compatibility with current Android versions or release readiness. See [build and validation notes](docs/BUILD_VALIDATION.md).
+GitHub Actions builds with Java 8 and runs database and home-screen launch tests on Android 8.0 (API 26) and Android 17 (API 37) emulators. Java 17 is used separately for SDK setup. The project still references JCenter. Passing this workflow establishes only the behavior covered by these tests; complete workflows, physical-device compatibility, and release readiness remain unverified. See [build and validation notes](docs/BUILD_VALIDATION.md).
 
 For development, clone this repository and open it in Android Studio. Use the historical environment described in the validation notes; no release APK is available yet. Do not interpret the internal `versionName "1.0"` as a published or complete release.
 
