@@ -10,18 +10,36 @@ permissions:
 
 jobs:
   legacy-build:
+    name: Android API ${{ matrix.api-level }}
     runs-on: ubuntu-22.04
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api-level: 26
+            target: default
+            ram-size: 1536M
+            heap-size: 256M
+            gpu: swiftshader_indirect
+          - api-level: '37.0'
+            target: google_apis
+            ram-size: 4096M
+            heap-size: 576M
+            gpu: software
     steps:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
+      - name: Test emulator launcher failure handling
+        run: python3 .github/scripts/test-emulator-scripts.py
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
         with:
+          cmdline-tools-version: '15859902'
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - name: Install historical SDK components
@@ -39,19 +57,26 @@ jobs:
       - name: Enable emulator acceleration
         run: |
           sudo chmod 666 /dev/kvm
-      - name: Run SQLite regression tests on Android 26
+      - name: Run database and launch tests
+        if: matrix.api-level == 26
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 26
+          api-level: ${{ matrix.api-level }}
           arch: x86_64
-          target: default
+          target: ${{ matrix.target }}
+          ram-size: ${{ matrix.ram-size }}
+          heap-size: ${{ matrix.heap-size }}
+          emulator-options: -no-window -gpu ${{ matrix.gpu }} -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
-          script: JAVA_HOME="$JAVA_HOME_8_X64" PATH="$JAVA_HOME_8_X64/bin:$PATH" ./gradlew --no-daemon --stacktrace connectedDebugAndroidTest
+          script: bash .github/scripts/run-instrumented-tests.sh
+      - name: Run tests after Android 17 services are ready
+        if: matrix.api-level == '37.0'
+        run: bash .github/scripts/run-modern-emulator.sh
       - name: Upload validation reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-validation-reports
+          name: android-validation-reports-api-${{ matrix.api-level }}
           path: |
             app/build/reports
             app/build/test-results
