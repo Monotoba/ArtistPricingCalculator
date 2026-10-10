@@ -7,3 +7,15 @@
 /build
 /captures
 .externalNativeBuild
+
+# Generated Android build outputs
+/app/build/
+/*/build/
+
+# Android signing keys and local signing configuration
+*.keystore
+*.jks
+*.p12
+*.pfx
+keystore.properties
+signing.properties
