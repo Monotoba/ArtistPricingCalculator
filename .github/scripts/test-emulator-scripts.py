@@ -10,10 +10,9 @@ SCRIPTS = Path(__file__).resolve().parent
 
 
 class EmulatorScriptsTest(unittest.TestCase):
-    def run_launcher(self, mode="success", emulator_exists=True):
+    def run_launcher(self, mode="success", emulator_exists=True, explicit_avd_home=True):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            avd = root / "avds/modern.avd"
             sdk = root / "sdk/emulator"
             sdk.mkdir(parents=True)
             commands = {
@@ -23,6 +22,7 @@ while (( $# )); do
   if [[ "$1" == --path ]]; then
     mkdir -p "$2"
     touch "$2/config.ini"
+    touch "$ANDROID_AVD_HOME/modern.ini"
     exit 0
   fi
   shift
@@ -45,7 +45,8 @@ esac''',
             }
             if emulator_exists:
                 commands[sdk / "emulator"] = (
-                    "exit 1" if mode == "early-exit" else "exec sleep 30"
+                    "exit 1" if mode == "early-exit" else
+                    '[[ -f "$ANDROID_AVD_HOME/modern.ini" ]] || exit 1; exec sleep 30'
                 )
             for path, body in commands.items():
                 path.write_text("#!/bin/bash\n" + body + "\n")
@@ -61,7 +62,10 @@ esac''',
             )
             env = dict(os.environ, PATH=f"{root}:/usr/bin:/bin",
                        ANDROID_HOME=str(root / "sdk"),
-                       ANDROID_AVD_HOME=str(root / "avds"), TEST_MODE=mode)
+                       ANDROID_USER_HOME=str(root / "android-user"), TEST_MODE=mode)
+            env.pop("ANDROID_AVD_HOME", None)
+            if explicit_avd_home:
+                env["ANDROID_AVD_HOME"] = str(root / "avds")
             result = subprocess.run(
                 ["bash", str(scripts / "run-modern-emulator.sh")],
                 cwd=root, env=env, capture_output=True, text=True, timeout=8,
@@ -71,6 +75,12 @@ esac''',
 
     def test_sdk_executable_works_without_emulator_on_path(self):
         result, diagnostic = self.run_launcher()
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertIn("OK (12 tests)", result.stdout)
+        self.assertIn("Diagnostics captured", diagnostic)
+
+    def test_user_home_fallback_shares_avd_registry(self):
+        result, diagnostic = self.run_launcher(explicit_avd_home=False)
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertIn("OK (12 tests)", result.stdout)
         self.assertIn("Diagnostics captured", diagnostic)
