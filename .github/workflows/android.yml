@@ -62,6 +62,9 @@ jobs:
             echo 'An old Android Support Library remains in the runtime graph.' >&2
             exit 1
           fi
+      - name: Record release runtime dependency graph
+        run: |
+          ./gradlew --no-daemon :app:dependencies --configuration releaseRuntimeClasspath > app/build/reports/dependencies/release-runtime.txt
       - name: Enable emulator acceleration
         run: |
           sudo chmod 666 /dev/kvm
