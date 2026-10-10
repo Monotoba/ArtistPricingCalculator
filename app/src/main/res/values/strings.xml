@@ -1,0 +1,94 @@
+<resources>
+    <string name="app_name">Artist Pricing Calculator</string>
+    <string name="title_activity_overhead_settings">Overhead Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="title_activity_marketing_settings">Marketing Costs</string>
+    <string name="title_activity_labor_settings">Labor Rates</string>
+    <string name="btn_start_label">Start</string>
+    <string name="tv_app_label">Artists Pricing Calculator</string>
+    <string name="tv_overhead_page_title">Overhead Costs</string>
+    <string name="tv_add_item_title">Add New Item</string>
+    <string name="tv_overhead_activity_done_label">Done</string>
+    <string name="tv_marketing_Page_title">Marketing Costs</string>
+    <string name="tv_labor_page_title">Labor Costs</string>
+    <string name="tv_materials_page_title">Materials Costs</string>
+    <string name="tv_packaging_page_title">Packaging Costs</string>
+    <string name="main_help_text">Welcome to the Artist Price Calculator. The app will help you calculate pricing on your artwork and allows you to not only price materials and labor but also to factor in overhead costs such as studio space, marketing &amp; packaging. You will also find help screens along with way. You can change your costing estimates at any time and price multiple items quickly and on the fly. </string>
+    <string name="overhead_help_text">To calculate studio costs, Enter your monthly rent, utilities, maintenance and anything else that is related to your making space. For home studios, measure your studio to calculate your square footage and divide into the total square footage of your home. This will provide you with a percentage. Then you can calculate the share of your mortgage &amp; utilities based on that percentage. The final step of this process is estimating how many pieces you can create each month. This can be an average or even an educated guess to start. To be more accurate, start keeping track of the number of pieces you create each month. The app divides your studio costs by the number of pieces you create per month in order to give you a studio cost per piece. If your studio costs change at any time, revisit your preferences here and change your input. </string>
+    <string name="marketing_help_text">Marketing costs can be calculated similarly to studio costs. So, consider what you spend on advertising per month. This can include print advertising, your email subscription service, Facebook and Instagram ads, or printing costs for flyers or postcards. You may not advertise every month, or those costs may change from month to month, so try to average the costs over twelve months to give you the amount you will use in this calculation. In the Studio Costs section, you recorded the number of pieces you make per month. Use that number again here. </string>
+    <string name="labor_help_text">Some text will be placed here soon!.</string>
+    <string name="materials_help_text">Include all of your materials costs. These fields will be completed with each pricing item.</string>
+    <string name="packaging_help_text">Be sure to include everything you need to create your special packaging. Packaging costs may vary depending on what you create, so you will enter this information every time you price an item. Remember to include wrapping, bags, tags, stickers, printing costs if you’ve developed custom packaging. If you include a business card or brochure, please include that cost as well. </string>
+    <string name="title_activity_settings">Settings</string>
+</resources>
