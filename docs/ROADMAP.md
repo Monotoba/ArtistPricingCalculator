@@ -1,6 +1,6 @@
 # Roadmap to an initial alpha
 
-Status: work in progress. Historical build validation and database regression coverage have been added; current Android compatibility and pricing remain unfinished. No delivery date is committed.
+Status: work in progress. Modern build validation, database regression coverage, limited Android 8/17 runtime checks, and pricing calculations have been added; complete workflows and release readiness remain unfinished. No delivery date is committed.
 
 ## 1. Reproduce the build
 
@@ -16,15 +16,11 @@ Acceptance: CRUD and bulk insertion work with empty data, Unicode names, quotes,
 
 ## 3. Specify and implement pricing
 
-The source comment proposes:
+Implemented with a pure decimal calculator and the existing Results activity. Stored costs are allocated to one artwork; labor uses exactly one Hourly Rate and one Hours record. Retail uses a custom multiplier of at least 1 (initial value 3); wholesale is half unrounded retail. Prices round independently to two decimal places, half up. Miscellaneous records are included as per-artwork costs.
 
-`retail = (overhead + marketing + laborRate * hours + materials + packaging) * markup`
+Twelve unit tests cover worked examples, all categories, zero costs, fractional hours, custom multipliers, decimal arithmetic, invalid records, and rounding. Five instrumented tests cover SQLite-to-results integration, invalid input clearing stale prices, missing labor, empty costs, multiplier restoration after recreation, and help launch.
 
-`wholesale = retail / 2`
-
-The comment suggests markup of 3 or 4. This is an unimplemented proposal, not a universally appropriate pricing rule. Define per-artwork allocation of recurring costs, valid inputs, markup selection, currency precision, and rounding before implementation.
-
-Acceptance: pure calculation tests cover worked examples, zero costs, fractional hours, invalid inputs, and rounding; the results screen uses tested logic and displays its assumptions.
+Allocation remains manual: the app does not automatically convert recurring expenses into per-artwork costs. Existing double-valued records retain their precision limits. Full workflow verification remains the next release gate.
 
 ## 4. Verify the artist workflow
 

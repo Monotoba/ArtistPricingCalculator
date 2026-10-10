@@ -12,8 +12,6 @@ public class ResultsHelpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_help);
-        TextView tv = (TextView)findViewById(R.id.tv_packaging_help_text);
-        tv.setMovementMethod(new ScrollingMovementMethod());
     }
 
     public void onDone(View view) {

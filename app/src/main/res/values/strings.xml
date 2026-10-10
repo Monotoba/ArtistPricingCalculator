@@ -91,4 +91,15 @@
     <string name="materials_help_text">Include all of your materials costs. These fields will be completed with each pricing item.</string>
     <string name="packaging_help_text">Be sure to include everything you need to create your special packaging. Packaging costs may vary depending on what you create, so you will enter this information every time you price an item. Remember to include wrapping, bags, tags, stickers, printing costs if you’ve developed custom packaging. If you include a business card or brochure, please include that cost as well. </string>
     <string name="title_activity_settings">Settings</string>
+    <string name="price_multiplier">Retail multiplier (at least 1)</string>
+    <string name="price_assumptions">Use costs allocated to one artwork, in one currency. Enter labor as one Hourly Rate and one Hours record (fractional hours allowed), or omit both. Retail = total cost × multiplier; wholesale = retail ÷ 2. These are estimates, not a guarantee of profit.</string>
+    <string name="price_breakdown">Total cost: %1$s\nLabor included: %2$s\nRetail multiplier: %3$s\nPrices rounded independently to 2 decimals (half up).</string>
+    <string name="price_unavailable">—</string>
+    <string name="price_retail">Retail Price</string>
+    <string name="price_wholesale">Wholesale Price</string>
+    <string name="price_results">Results</string>
+    <string name="price_done">Done</string>
+    <string name="price_print">Print (not implemented)</string>
+    <string name="price_email">Email (not implemented)</string>
+    <string name="price_help">Allocate overhead and marketing costs to this artwork before entering them; the app does not divide monthly or annual expenses automatically. Materials, packaging, and miscellaneous costs are per artwork. Use the same currency for every amount. Labor records must be named Hourly Rate and Hours; names are case insensitive. Other or duplicate labor records produce an error. A missing labor pair produces an error; no labor records means zero labor.\n\nChoose a decimal retail multiplier of at least 1 using a decimal point. The initial value is 3 and is not a recommended business margin. Retail is total cost times the multiplier. Wholesale is half the unrounded retail calculation. Each price is rounded independently to two decimal places, half up; this assumes a currency with two decimal minor units. Taxes, selling fees, shipping, and profitability are not automatically modeled. Include applicable costs in your allocations.\n\nAn empty cost list yields zero. New databases contain example records; replace them before using the estimates. Print and email controls are not implemented.</string>
 </resources>
