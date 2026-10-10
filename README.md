@@ -26,6 +26,18 @@ GitHub Actions builds with Java 17 and runs database, home-screen, and Results/h
 
 For development, clone this repository and use Java 17 with SDK platform 36 and build tools 35.0.0, as described in the validation notes. **This is a source-only beta.** No release APK is provided or distributed. Developers may build the project locally at their own discretion; passing emulator tests does not establish physical-device compatibility. The internal `versionName "1.0"` is a historical build value, not the semantic version of this source snapshot. See [beta release notes](docs/BETA_RELEASE_NOTES.md).
 
+## Build and install with Android Studio
+
+No precompiled APK is distributed. To try the beta, compile and install it yourself using **Android Studio**:
+
+1. Install Android Studio and its Android SDK. Ensure that the project can use JDK 17, Android SDK Platform 36, and Build Tools 35.0.0; Android Studio can install missing SDK components.
+2. Download the GitHub source archive (or clone the repository), extract it if necessary, and choose **File > Open** in Android Studio. Select the project root folder containing `settings.gradle`.
+3. Allow Android Studio to synchronize Gradle and download the declared dependencies. Use the included Gradle wrapper rather than substituting a newer Gradle version.
+4. Connect an Android device with Developer options and USB debugging enabled, and authorize the computer when prompted. Alternatively, select an Android Virtual Device emulator.
+5. Choose the **app** run configuration, select your device or emulator, and click **Run** (the green triangle). Android Studio will compile, install, and start a **debug build** of the app.
+
+These instructions are for experimental local installation only. The project has not been certified on physical hardware, and the repository does not provide a signed release installer. Do not uninstall an installation containing data you want to retain without first arranging a backup; signing changes can prevent in-place upgrades.
+
 ## Help move it forward
 
 Read the [roadmap](docs/ROADMAP.md) and [contribution guide](CONTRIBUTING.md). Useful contributions include assessing current Android compatibility, expanding UI and database tests, reviewing cost allocations, and validating complete artist workflows.
