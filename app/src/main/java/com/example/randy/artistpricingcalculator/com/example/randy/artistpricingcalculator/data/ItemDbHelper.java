@@ -1,22 +1,18 @@
 package com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data;
 
-import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by randy on 3/7/18.
  */
 
 public class ItemDbHelper extends SQLiteOpenHelper {
-    String TAG = getClass().getSimpleName();
 
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
@@ -81,49 +77,31 @@ public class ItemDbHelper extends SQLiteOpenHelper {
 
     // Get a count of all items in the db
     public int getItemCount() {
-        String query = "SELECT * FROM " + ItemContract.ItemEntry.TABLE_NAME;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        cursor.close();
-
-        // Return count
-        return cursor.getCount();
+        try (Cursor cursor = getReadableDatabase().rawQuery(
+                "SELECT COUNT(*) FROM " + ItemContract.ItemEntry.TABLE_NAME, null)) {
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+        }
     }
 
     // Returns the count of items matching type.
     public int getItemByTypeCount(String type) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Did we get a valid item type?
-        // If not, return null.
-        if(!isItemType(type)) return Integer.parseInt(null);
-
-        ArrayList<Item> items = new ArrayList<Item>();
-        String query = "SELECT * FROM " + ItemContract.ItemEntry.TABLE_NAME;
-        String whereCluase = " WHERE " + ItemContract.ItemEntry.COLUMN_ITEM_TYPE + " = \""
-                + type + "\"";
-
-        Cursor cursor = db.query(ItemContract.ItemEntry.TABLE_NAME,
-                new String[] {
-                        ItemContract.ItemEntry._ID,
-                        ItemContract.ItemEntry.COLUMN_ITEM_TYPE,
-                        ItemContract.ItemEntry.COLUMN_ITEM_NAME,
-                        ItemContract.ItemEntry.COLUMN_ITEM_VALUE,
-                        ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS},
-                ItemContract.ItemEntry.COLUMN_ITEM_TYPE + "=?",
-                new String[] {type},
-                null,
-                null,
-                ItemContract.ItemEntry.COLUMN_ITEM_NAME,
-                null
-        );
-
-        return cursor.getCount();
+        if (!isItemType(type)) {
+            throw new IllegalArgumentException("Unknown item type: " + type);
+        }
+        try (Cursor cursor = getReadableDatabase().rawQuery(
+                "SELECT COUNT(*) FROM " + ItemContract.ItemEntry.TABLE_NAME
+                        + " WHERE " + ItemContract.ItemEntry.COLUMN_ITEM_TYPE + "=?",
+                new String[] {type})) {
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+        }
     }
 
     // Utility method used to determine if the string
     // passed in is a valid item type.
     private boolean isItemType(String type) {
+        if (type == null) return false;
         switch(type) {
             case ItemContract.ITEM_TYPE_LABOR: return true;
             case ItemContract.ITEM_TYPE_MARKETING: return true;
@@ -141,55 +119,51 @@ public class ItemDbHelper extends SQLiteOpenHelper {
      *         Insert Methods         *
      **********************************/
 
-    // Insert a single item into the database
-    public void addItem(Item item) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    private static final String[] ITEM_COLUMNS = {
+            ItemContract.ItemEntry._ID,
+            ItemContract.ItemEntry.COLUMN_ITEM_TYPE,
+            ItemContract.ItemEntry.COLUMN_ITEM_NAME,
+            ItemContract.ItemEntry.COLUMN_ITEM_VALUE,
+            ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS
+    };
 
-        // Create a container for our record values
+    private static Item readItem(Cursor cursor) {
+        return ItemContract.makeItem(cursor.getString(1), cursor.getString(2),
+                cursor.getDouble(3), cursor.getInt(4) != 0, cursor.getInt(0));
+    }
+
+    private ContentValues itemValues(Item item) {
+        if (item == null || !isItemType(item.mType)) {
+            throw new IllegalArgumentException("Item must have a supported type");
+        }
         ContentValues values = new ContentValues();
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_TYPE, item.mType);
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_NAME, item.mName);
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_VALUE, item.mValue);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS, item.mPersist);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS, item.mPersist ? 1 : 0);
+        return values;
+    }
 
-        // Now insert the row
-        db.insert(ItemContract.ItemEntry.TABLE_NAME, null, values);
-        db.close();
-
+    // Insert a single item into the database
+    public void addItem(Item item) {
+        getWritableDatabase().insertOrThrow(
+                ItemContract.ItemEntry.TABLE_NAME, null, itemValues(item));
     }
 
     // Insert a list of items into the database
     public void addItems(ArrayList<Item> items) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String query;
-
-        query = "INSERT INTO " + ItemContract.ItemEntry.TABLE_NAME +"( "
-                + ItemContract.ItemEntry.COLUMN_ITEM_TYPE + ", "
-                + ItemContract.ItemEntry.COLUMN_ITEM_NAME + ", "
-                + ItemContract.ItemEntry.COLUMN_ITEM_VALUE + ", "
-                + ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS + ") "
-                + "VALUES ";
-
-        // Loop over sample data adding each item to the query
-        for(Item item : items) {
-            query += " ("
-                    +item.mType +", "
-                    + item.mName + ", "
-                    + String.valueOf(item.mValue)
-                    + String.valueOf(item.mPersist)
-                    + "),";
+        if (items == null) throw new IllegalArgumentException("Items must not be null");
+        if (items.isEmpty()) return;
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (Item item : items) {
+                db.insertOrThrow(ItemContract.ItemEntry.TABLE_NAME, null, itemValues(item));
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
-
-        Log.d(TAG, "addItems Query: " + query);
-        // Trim the trailing comma and append the closing semicolon.
-        query = query.substring(0,-1);
-        query += ";";
-
-        // Finally, we run the query.
-        db.execSQL(query);
-        db.close();
-
     }
 
     /**********************************
@@ -199,36 +173,12 @@ public class ItemDbHelper extends SQLiteOpenHelper {
     // Read the row matching id from the database
     // and return the data as an object of type Item.
     public Item getItemById(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Create and execute the query
-        Cursor cursor = db.query(ItemContract.ItemEntry.TABLE_NAME,
-                new String[] {
-                        ItemContract.ItemEntry._ID,
-                        ItemContract.ItemEntry.COLUMN_ITEM_TYPE,
-                        ItemContract.ItemEntry.COLUMN_ITEM_NAME,
-                        ItemContract.ItemEntry.COLUMN_ITEM_VALUE,
-                        ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS},
-                ItemContract.ItemEntry._ID + "=?",
-                new String[] {String.valueOf(id)},
-                ItemContract.ItemEntry.COLUMN_ITEM_TYPE,
-                null,
-                null,
-                null);
-
-        if(cursor != null) {
-            cursor.moveToFirst();
+        try (Cursor cursor = getReadableDatabase().query(
+                ItemContract.ItemEntry.TABLE_NAME, ITEM_COLUMNS,
+                ItemContract.ItemEntry._ID + "=?", new String[] {String.valueOf(id)},
+                null, null, null)) {
+            return cursor.moveToFirst() ? readItem(cursor) : null;
         }
-
-        Item item = ItemContract.makeItem(
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getDouble(3),
-                Boolean.parseBoolean(cursor.getString(4)),
-                Integer.parseInt(cursor.getString(0))
-        );
-
-        return item;
     }
 
 
@@ -236,86 +186,27 @@ public class ItemDbHelper extends SQLiteOpenHelper {
     // Note that this is not safe. Any string can be passed in type...
     // TODO DONE  Fix so this is safe
     public ArrayList<Item> getItemsByType(String type){
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Did we get a valid item type?
-        // If not, return null.
-        if(!isItemType(type)) return null;
-
+        // Preserve the existing null result for an unsupported category.
+        if (!isItemType(type)) return null;
         ArrayList<Item> items = new ArrayList<Item>();
-        String query = "SELECT * FROM " + ItemContract.ItemEntry.TABLE_NAME;
-        String whereCluase = " WHERE " + ItemContract.ItemEntry.COLUMN_ITEM_TYPE + " = \""
-                + type + "\"";
-
-        Cursor cursor = db.query(ItemContract.ItemEntry.TABLE_NAME,
-                new String[] {
-                        ItemContract.ItemEntry._ID,
-                        ItemContract.ItemEntry.COLUMN_ITEM_TYPE,
-                        ItemContract.ItemEntry.COLUMN_ITEM_NAME,
-                        ItemContract.ItemEntry.COLUMN_ITEM_VALUE,
-                        ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS},
-                ItemContract.ItemEntry.COLUMN_ITEM_TYPE + "=?",
-                new String[] {type},
-                null,
-                null,
-                ItemContract.ItemEntry.COLUMN_ITEM_NAME,
-                null
-                );
-
-        if(cursor.moveToFirst()) {
-            do {
-
-                // Create a Item object
-                Item item = ItemContract.makeItem(
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getDouble(3),
-                        Boolean.parseBoolean(cursor.getString(4)),
-                        Integer.parseInt(cursor.getString(0))
-                );
-
-                // Add the new item to the items list
-                items.add(item);
-            } while (cursor.moveToNext());
-
+        try (Cursor cursor = getReadableDatabase().query(
+                ItemContract.ItemEntry.TABLE_NAME, ITEM_COLUMNS,
+                ItemContract.ItemEntry.COLUMN_ITEM_TYPE + "=?", new String[] {type},
+                null, null, ItemContract.ItemEntry.COLUMN_ITEM_NAME)) {
+            while (cursor.moveToNext()) items.add(readItem(cursor));
         }
-
-        // return our list of items
         return items;
-
     }
 
     // Get a list of all items from the database
     public ArrayList<Item> getAllItems(){
-        SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Item> items = new ArrayList<Item>();
-
-        // Select All Query
-        String query = "SELECT * FROM " + ItemContract.ItemEntry.TABLE_NAME;
-        Cursor cursor = db.rawQuery(query, null);
-
-        // Loop through all returned records
-        // and add them to the Item list.
-        if(cursor.moveToFirst()) {
-            do {
-                // Create a Item object
-                Item item = ItemContract.makeItem(
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getDouble(3),
-                        Boolean.parseBoolean(cursor.getString(4)),
-                        Integer.parseInt(cursor.getString(0))
-                );
-
-                // Add the new item to the items list
-                items.add(item);
-            } while (cursor.moveToNext());
-
+        try (Cursor cursor = getReadableDatabase().query(
+                ItemContract.ItemEntry.TABLE_NAME, ITEM_COLUMNS,
+                null, null, null, null, null)) {
+            while (cursor.moveToNext()) items.add(readItem(cursor));
         }
-
-        // return our list of items
         return items;
-
     }
 
     /**********************************
@@ -324,28 +215,9 @@ public class ItemDbHelper extends SQLiteOpenHelper {
 
     // Update a record
     public int updateItem(Item item) {
-        int updateCount;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Did we get a valid item type?
-        // If not, return null.
-        if(!isItemType(item.mType)) return Integer.parseInt(null);
-
-        ContentValues values = new ContentValues();
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_TYPE, item.mType);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_NAME, item.mName);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_VALUE, item.mValue);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PERSISTS, item.mPersist);
-
-        // Update the row
-         updateCount = db.update(ItemContract.ItemEntry.TABLE_NAME, values,
-                ItemContract.ItemEntry._ID + " = ?",
-                new String[] { String.valueOf(item.mID) });
-        db.close();
-
-        return updateCount;
-
+        return getWritableDatabase().update(
+                ItemContract.ItemEntry.TABLE_NAME, itemValues(item),
+                ItemContract.ItemEntry._ID + "=?", new String[] {String.valueOf(item.mID)});
     }
 
 
@@ -359,9 +231,7 @@ public class ItemDbHelper extends SQLiteOpenHelper {
     }
 
     public void deleteItemById(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(ItemContract.ItemEntry.TABLE_NAME, ItemContract.ItemEntry._ID + " = ?",
-                new String[] { String.valueOf(id) });
-        db.close();
+        getWritableDatabase().delete(ItemContract.ItemEntry.TABLE_NAME,
+                ItemContract.ItemEntry._ID + "=?", new String[] {String.valueOf(id)});
     }
 }
