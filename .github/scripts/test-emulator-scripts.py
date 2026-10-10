@@ -73,6 +73,13 @@ esac''',
             diagnostic = root / "app/build/reports/emulator/logcat.txt"
             return result, diagnostic.read_text() if diagnostic.exists() else ""
 
+    def test_ci_archives_apk_and_checksum_for_manual_testing(self):
+        workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
+        self.assertIn("sha256sum app/build/outputs/apk/debug/app-debug.apk", workflow)
+        self.assertIn("debug-apk-api-", workflow)
+        self.assertIn("if-no-files-found: error", workflow)
+        self.assertIn("actions/upload-artifact@v7", workflow)
+
     def test_workflow_uses_node24_compatible_actions(self):
         workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
         for action in (
