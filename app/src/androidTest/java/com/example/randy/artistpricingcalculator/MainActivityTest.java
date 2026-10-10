@@ -2,8 +2,8 @@ package com.example.randy.artistpricingcalculator;
 
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.widget.TextView;
 
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class MainActivityTest {
     @Test
     public void homeScreenLaunchesWithTitleAndStartControl() {
         final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        Intent intent = new Intent(InstrumentationRegistry.getTargetContext(), MainActivity.class);
+        Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final MainActivity activity = (MainActivity) instrumentation.startActivitySync(intent);
         try {

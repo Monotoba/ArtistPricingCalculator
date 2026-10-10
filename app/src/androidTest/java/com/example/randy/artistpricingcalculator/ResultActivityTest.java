@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,7 +32,7 @@ public class ResultActivityTest {
     private Activity activity;
 
     @Before public void setUp() {
-        helper = new ItemDbHelper(InstrumentationRegistry.getTargetContext());
+        helper = new ItemDbHelper(InstrumentationRegistry.getInstrumentation().getTargetContext());
         SQLiteDatabase db = helper.getWritableDatabase();
         try (Cursor cursor = db.query(ItemContract.ItemEntry.TABLE_NAME,null,null,null,null,null,null)) {
             while (cursor.moveToNext()) {
@@ -60,7 +60,7 @@ public class ResultActivityTest {
         }
     }
     private void launch(Class<? extends Activity> type) {
-        Intent intent = new Intent(InstrumentationRegistry.getTargetContext(),type);
+        Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(),type);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity = instrumentation.startActivitySync(intent);
         instrumentation.waitForIdleSync();
