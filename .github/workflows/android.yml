@@ -80,6 +80,19 @@ jobs:
       - name: Run tests after Android 17 services are ready
         if: matrix.api-level == '37.0'
         run: bash .github/scripts/run-modern-emulator.sh
+      - name: Record debug APK checksum for manual validation
+        run: |
+          mkdir -p app/build/reports/apk
+          sha256sum app/build/outputs/apk/debug/app-debug.apk > app/build/reports/apk/app-debug.apk.sha256
+      - name: Upload debug APK for installation tests
+        uses: actions/upload-artifact@v7
+        with:
+          name: debug-apk-api-${{ matrix.api-level }}
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/reports/apk/app-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 14
       - name: Upload validation reports
         if: always()
         uses: actions/upload-artifact@v7
