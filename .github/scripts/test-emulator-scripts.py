@@ -73,6 +73,13 @@ esac''',
             diagnostic = root / "app/build/reports/emulator/logcat.txt"
             return result, diagnostic.read_text() if diagnostic.exists() else ""
 
+    def test_workflow_avoids_duplicate_pr_branch_runs(self):
+        workflow = (SCRIPTS.parent / "workflows/android.yml").read_text()
+        self.assertIn("branches: [master]", workflow)
+        self.assertIn("pull_request:", workflow)
+        self.assertIn("cancel-in-progress: true", workflow)
+        self.assertIn("github.event.pull_request.number || github.ref", workflow)
+
     def test_sdk_executable_works_without_emulator_on_path(self):
         result, diagnostic = self.run_launcher()
         self.assertEqual(0, result.returncode, result.stderr)
