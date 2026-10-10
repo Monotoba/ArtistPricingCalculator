@@ -28,7 +28,7 @@ The original project code is available under BSD-2-Clause. Dependencies and any 
 
 ## Build and test
 
-See [build validation](BUILD_VALIDATION.md) for a development setup. The source can be built locally for testing; maintainers do not provide an officially signed installable application. CI coverage is limited to the tests documented in the repository.
+To install this source-only beta, download or clone the source, open the project root in **Android Studio**, allow Gradle to sync using JDK 17 and the required Android SDK, select the **app** configuration, then select an emulator or a USB-debugging-enabled Android device and click **Run**. Android Studio builds, installs, and launches a local **debug build**. See the detailed [Android Studio installation steps](../README.md#build-and-install-with-android-studio) and [build validation](BUILD_VALIDATION.md). No precompiled or officially signed installation package is provided. Device compatibility is not guaranteed; CI covers only documented tests.
 
 ## Release presentation
 
