@@ -4,9 +4,13 @@ set -euo pipefail
 report_dir=app/build/reports/emulator
 mkdir -p "$report_dir"
 sdkmanager 'emulator' 'system-images;android-37.0;google_apis;x86_64'
+# SDK tools and the emulator must use the same AVD registry directory.
+export ANDROID_AVD_HOME="${ANDROID_AVD_HOME:-${ANDROID_USER_HOME:-$HOME/.android}/avd}"
+avd_dir="$ANDROID_AVD_HOME/modern.avd"
+mkdir -p "$(dirname "$avd_dir")"
 echo no | avdmanager create avd --force --name modern \
-  --package 'system-images;android-37.0;google_apis;x86_64'
-config="${ANDROID_AVD_HOME:-$HOME/.android/avd}/modern.avd/config.ini"
+  --package 'system-images;android-37.0;google_apis;x86_64' --path "$avd_dir"
+config="$avd_dir/config.ini"
 cat >> "$config" <<'CONFIG'
 hw.ramSize=4096
 vm.heapSize=576

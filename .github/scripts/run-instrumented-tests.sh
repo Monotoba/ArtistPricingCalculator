@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build with historical Gradle before installing the modern emulator SDK.
-# Execute the already-built APKs with current adb, avoiding old SDK metadata parsing.
+# Execute the APKs already built by CI with current adb on either emulator target.
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 mkdir -p app/build/reports/instrumentation

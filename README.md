@@ -16,15 +16,15 @@ An unfinished Android app intended to help artists organize labor, materials, ov
 - SQLite item storage and sample cost records.
 - Historical design assets in [docs](docs).
 - A Gradle wrapper and Android Studio project.
-- Ten SQLite regression tests and a home-screen launch test, plus the original generated example tests. Pricing and complete UI behavior are not yet tested.
+- Ten SQLite regression tests, two database-isolation checks, and a home-screen launch test, plus the original generated example tests. Pricing and complete UI behavior are not yet tested.
 
 ## Build status
 
-The checked-in configuration uses Android Gradle Plugin 3.0.1, Gradle 4.1, Android SDK 26, and the Android Support Library. Its minimum SDK is 19 and target SDK is 26. These are historical configuration values, not verified compatibility claims.
+The build uses Android Gradle Plugin 8.13.2, Gradle 8.13, Java 17, and compile SDK 36. Dependency resolution uses Google Maven and Maven Central. The Android Support Library is retained for a separate AndroidX migration. Minimum SDK 19 and target SDK 26 remain unchanged; minimum-version support and Play Store eligibility are not established by these settings.
 
-GitHub Actions builds with Java 8 and runs database and home-screen launch tests on Android 8.0 (API 26) and Android 17 (API 37) emulators. Java 17 is used separately for SDK setup. The project still references JCenter. Passing this workflow establishes only the behavior covered by these tests; complete workflows, physical-device compatibility, and release readiness remain unverified. See [build and validation notes](docs/BUILD_VALIDATION.md).
+GitHub Actions builds with Java 17 and runs database and home-screen launch tests on Android 8.0 (API 26) and Android 17 (API 37) emulators. It also validates the Gradle wrapper and launcher failure handling. Passing this workflow establishes only the behavior covered by these tests; complete workflows, physical-device compatibility, and release readiness remain unverified. See [build and validation notes](docs/BUILD_VALIDATION.md).
 
-For development, clone this repository and open it in Android Studio. Use the historical environment described in the validation notes; no release APK is available yet. Do not interpret the internal `versionName "1.0"` as a published or complete release.
+For development, clone this repository and use Java 17 with SDK platform 36 and build tools 35.0.0, as described in the validation notes. No release APK is available yet. Do not interpret the internal `versionName "1.0"` as a published or complete release.
 
 ## Help move it forward
 
