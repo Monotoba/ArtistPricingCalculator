@@ -1,14 +1,14 @@
 # Artist Pricing Calculator
 
-![Status: work in progress](https://img.shields.io/badge/status-work%20in%20progress-orange)
+![Status: source beta](https://img.shields.io/badge/status-source%20beta-orange)
 ![Platform: Android](https://img.shields.io/badge/platform-Android-green)
 [![Android validation](https://github.com/Monotoba/ArtistPricingCalculator/actions/workflows/android.yml/badge.svg)](https://github.com/Monotoba/ArtistPricingCalculator/actions/workflows/android.yml)
 ![Language: Java](https://img.shields.io/badge/language-Java-blue)
 [![License: BSD-2-Clause](https://img.shields.io/badge/license-BSD--2--Clause-blue)](LICENSE)
 
-An unfinished Android app intended to help artists organize labor, materials, overhead, marketing, and packaging costs when estimating artwork prices.
+A source-only beta of an unfinished Android app intended to help artists organize labor, materials, overhead, marketing, and packaging costs when estimating artwork prices.
 
-The Results screen calculates retail and wholesale estimates from stored costs and a custom multiplier. The app remains a work in progress: complete artist workflows, data migrations, and release readiness have not yet been established.
+The Results screen calculates retail and wholesale estimates from stored costs and a custom multiplier. The app remains a work in progress. This beta is a **source-code snapshot for inspection, experimentation, and development**; no installable APK is distributed, no app-store publication is planned, and complete artist workflows, data migrations, and physical-device compatibility are not established.
 
 ## What is in the repository?
 
@@ -24,7 +24,7 @@ The build uses Android Gradle Plugin 8.13.2, Gradle 8.13, Java 17, and compile S
 
 GitHub Actions builds with Java 17 and runs database, home-screen, and Results/help tests on Android 8.0 (API 26) and Android 17 (API 37) emulators. It also validates the Gradle wrapper and launcher failure handling. Passing this workflow establishes only the behavior covered by these tests; complete workflows, physical-device compatibility, and release readiness remain unverified. See [build and validation notes](docs/BUILD_VALIDATION.md).
 
-For development, clone this repository and use Java 17 with SDK platform 36 and build tools 35.0.0, as described in the validation notes. No release APK is available yet. Do not interpret the internal `versionName "1.0"` as a published or complete release.
+For development, clone this repository and use Java 17 with SDK platform 36 and build tools 35.0.0, as described in the validation notes. **This is a source-only beta.** No release APK is provided or distributed. Developers may build the project locally at their own discretion; passing emulator tests does not establish physical-device compatibility. The internal `versionName "1.0"` is a historical build value, not the semantic version of this source snapshot. See [beta release notes](docs/BETA_RELEASE_NOTES.md).
 
 ## Help move it forward
 
