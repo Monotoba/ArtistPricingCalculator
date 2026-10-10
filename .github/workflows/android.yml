@@ -2,8 +2,13 @@ name: Android validation
 
 on:
   push:
+    branches: [master]
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: android-validation-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
