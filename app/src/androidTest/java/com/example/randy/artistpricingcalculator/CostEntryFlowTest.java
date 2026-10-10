@@ -123,4 +123,37 @@ public class CostEntryFlowTest {
         }
         return null;
     }
+
+    @Test public void blankNameCannotBeSaved() {
+        ItemDbHelper db = new ItemDbHelper(instrumentation.getTargetContext());
+        Activity add = null;
+        String uniqueAmount = "735281.39";
+        try {
+            add = launch(AddItemActivity.class, -1, ItemContract.ITEM_TYPE_MATERIALS);
+            final Activity screen = add;
+            final int before = db.getItemCount();
+            instrumentation.runOnMainSync(new Runnable() {
+                @Override public void run() {
+                    ((EditText)screen.findViewById(R.id.tv_item_name)).setText("  ");
+                    ((EditText)screen.findViewById(R.id.tv_item_amount)).setText(uniqueAmount);
+                    screen.findViewById(R.id.btn_add_item).performClick();
+                    assertNotNull(((EditText)screen.findViewById(R.id.tv_item_name)).getError());
+                }
+            });
+            assertEquals(before, db.getItemCount());
+        } finally {
+            finish(add);
+            db.close();
+        }
+    }
+
+    @Test public void editingMissingRecordFinishesGracefully() {
+        Activity edit = null;
+        try {
+            edit = launch(EditItemActivity.class, Integer.MAX_VALUE, ItemContract.ITEM_TYPE_MATERIALS);
+            assertTrue("A nonexistent record should close the Edit screen", edit.isFinishing() || edit.isDestroyed());
+        } finally {
+            finish(edit);
+        }
+    }
 }
