@@ -17,7 +17,12 @@ hw.lcd.density=420
 CONFIG
 
 adb start-server
-emulator -avd modern -port 5554 -no-window -gpu software \
+emulator_bin="${ANDROID_HOME:?ANDROID_HOME must point to the Android SDK}/emulator/emulator"
+if [[ ! -x "$emulator_bin" ]]; then
+  echo "Android emulator executable is missing: $emulator_bin" >&2
+  exit 1
+fi
+"$emulator_bin" -avd modern -port 5554 -no-window -gpu software \
   -no-snapshot -noaudio -no-boot-anim > "$report_dir/emulator.log" 2>&1 &
 emulator_pid=$!
 cleanup() {
@@ -32,6 +37,11 @@ trap cleanup EXIT
 deadline=$((SECONDS + 600))
 ready=false
 while (( SECONDS < deadline )); do
+  if ! kill -0 "$emulator_pid" 2>/dev/null; then
+    echo 'Android emulator exited before framework services became ready.' >&2
+    tail -n 50 "$report_dir/emulator.log" >&2
+    exit 1
+  fi
   if [[ $(timeout 10s adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\r') == 1 ]] \
       && timeout 10s adb -s emulator-5554 shell service check input 2>/dev/null | grep -q '^Service input: found' \
       && timeout 10s adb -s emulator-5554 shell service check package 2>/dev/null | grep -q '^Service package: found'; then

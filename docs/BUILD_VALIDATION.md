@@ -23,6 +23,8 @@ The second command requires a running emulator or attached device. The workflow 
 
 ## Regression scope
 
+Five SDK-independent CI launcher tests cover an emulator available only at its SDK path, a missing executable, early emulator exit, unavailable framework services, and failed instrumentation. Android 17 startup additionally waits for input and package services and retains emulator/system diagnostics when startup fails.
+
 Ten database tests cover counts, empty reads, Unicode and quotes, persistence flags, single and bulk insertion, empty bulk input, updates, deletion, missing IDs, repeated reads, reopening, transaction rollback, and invalid item categories.
 
 Bulk insertion is atomic: an invalid row rolls back earlier rows. Unsupported count/update/insert types raise `IllegalArgumentException`; unsupported list queries retain their existing `null` result. Missing-ID lookup returns `null`. Callers must handle missing records before using them; comprehensive activity error handling remains future work.
