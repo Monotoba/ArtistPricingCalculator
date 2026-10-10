@@ -56,6 +56,7 @@ jobs:
         run: |
           sudo chmod 666 /dev/kvm
       - name: Run database and launch tests
+        if: matrix.api-level == 26
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -66,6 +67,9 @@ jobs:
           emulator-options: -no-window -gpu ${{ matrix.gpu }} -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: bash .github/scripts/run-instrumented-tests.sh
+      - name: Run tests after Android 17 services are ready
+        if: matrix.api-level == '37.0'
+        run: bash .github/scripts/run-modern-emulator.sh
       - name: Upload validation reports
         if: always()
         uses: actions/upload-artifact@v4
