@@ -10,7 +10,7 @@ The app is built with its historical toolchain. CI runs the same APK and instrum
 - Android 17 / API 37 x86_64 emulator (`google_apis` image; SDK package suffix `37.0`).
 - Java 17 for current SDK-management tools, separate from the Gradle build.
 
-The [Android validation workflow](../.github/workflows/android.yml) installs these components and uploads test reports. It also runs the original generated local unit test; that test is not pricing coverage.
+The [Android validation workflow](../.github/workflows/android.yml) installs these components and uploads test reports. It also runs the original generated local unit test; that test is not pricing coverage. CI builds both APKs before installing emulator components, then installs and runs them through current `adb` using [the instrumentation script](../.github/scripts/run-instrumented-tests.sh). This avoids making Gradle 4.1 parse the modern emulator's SDK metadata. The script requires a successful, nonempty instrumentation test summary because `adb` alone may return success when tests fail.
 
 With the SDK installed and Java 8 selected:
 

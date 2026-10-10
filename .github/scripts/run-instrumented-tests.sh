@@ -12,4 +12,4 @@ adb shell am instrument -w -r \
   | tee "$report"
 
 # adb can return success even when instrumentation fails; require the runner's summary.
-grep -Eq '^OK \([0-9]+ tests?\)' "$report"
+grep -Eq '^OK \([1-9][0-9]* tests?\)' "$report"
