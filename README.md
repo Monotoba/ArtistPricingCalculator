@@ -8,7 +8,7 @@
 
 A source-only beta of an unfinished Android app intended to help artists organize labor, materials, overhead, marketing, and packaging costs when estimating artwork prices.
 
-The Results screen calculates retail and wholesale estimates from stored costs and a custom multiplier. The app remains a work in progress. This beta is a **source-code snapshot for inspection, experimentation, and development**; no installable APK is distributed, no app-store publication is planned, and complete artist workflows, data migrations, and physical-device compatibility are not established.
+The Results screen calculates retail and wholesale estimates from stored costs and a custom multiplier. The app remains a work in progress. This beta provides source archives and an **optional, experimental debug APK** through GitHub Releases; no app-store publication is planned, and complete artist workflows, data migrations, and physical-device compatibility are not established.
 
 ## What is in the repository?
 
@@ -24,17 +24,19 @@ The build uses Android Gradle Plugin 8.13.2, Gradle 8.13, Java 17, and compile S
 
 GitHub Actions builds with Java 17 and runs database, home-screen, and Results/help tests on Android 8.0 (API 26) and Android 17 (API 37) emulators. It also validates the Gradle wrapper and launcher failure handling. Passing this workflow establishes only the behavior covered by these tests; complete workflows, physical-device compatibility, and release readiness remain unverified. See [build and validation notes](docs/BUILD_VALIDATION.md).
 
-For development, clone this repository and use Java 17 with SDK platform 36 and build tools 35.0.0, as described in the validation notes. **This is a source-only beta.** No release APK is provided or distributed. Developers may build the project locally at their own discretion; passing emulator tests does not establish physical-device compatibility. The internal `versionName "1.0"` is a historical build value, not the semantic version of this source snapshot. See [beta release notes](docs/BETA_RELEASE_NOTES.md).
+For development, clone this repository and use Java 17 with SDK platform 36 and build tools 35.0.0, as described in the validation notes. **The planned GitHub beta includes source archives and a separately attached debug APK.** Developers may also build the project locally; passing emulator tests does not establish physical-device compatibility. The internal `versionName "1.0"` is a historical build value, not the semantic version of this source snapshot. See [beta release notes](docs/BETA_RELEASE_NOTES.md).
 
 ## Build and install with Android Studio
 
-No precompiled APK is distributed. To try the beta, compile and install it yourself using **Android Studio**:
+You can compile and install the beta yourself using **Android Studio**, without downloading the experimental debug APK:
 
 1. Install Android Studio and its Android SDK. Ensure that the project can use JDK 17, Android SDK Platform 36, and Build Tools 35.0.0; Android Studio can install missing SDK components.
 2. Download the GitHub source archive (or clone the repository), extract it if necessary, and choose **File > Open** in Android Studio. Select the project root folder containing `settings.gradle`.
 3. Allow Android Studio to synchronize Gradle and download the declared dependencies. Use the included Gradle wrapper rather than substituting a newer Gradle version.
 4. Connect an Android device with Developer options and USB debugging enabled, and authorize the computer when prompted. Alternatively, select an Android Virtual Device emulator.
 5. Choose the **app** run configuration, select your device or emulator, and click **Run** (the green triangle). Android Studio will compile, install, and start a **debug build** of the app.
+
+Alternatively, download the debug APK from the GitHub prerelease Assets, verify its published SHA-256 checksum, and install it using Android's package installer or `adb install`. Debug APKs are **not production-signed** and may expose debugging interfaces; treat them as experimental and avoid sensitive or irreplaceable data.
 
 These instructions are for experimental local installation only. The project has not been certified on physical hardware, and the repository does not provide a signed release installer. Do not uninstall an installation containing data you want to retain without first arranging a backup; signing changes can prevent in-place upgrades.
 
