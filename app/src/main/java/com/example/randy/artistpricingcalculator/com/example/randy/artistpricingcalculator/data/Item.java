@@ -1,6 +1,5 @@
 package com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data;
 
-import android.support.annotation.Nullable;
 
 /**
  * Created by randy on 3/7/18.

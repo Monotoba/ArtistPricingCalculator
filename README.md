@@ -16,11 +16,11 @@ The Results screen calculates retail and wholesale estimates from stored costs a
 - SQLite item storage and sample cost records.
 - Historical design assets in [docs](docs).
 - A Gradle wrapper and Android Studio project.
-- Ten SQLite regression tests, two database-isolation checks, and a home-screen launch test, plus the original generated example tests. Twelve pure pricing tests and five Results/help UI tests cover calculations, invalid input, database integration, and activity recreation. Complete UI workflows remain unverified.
+- Ten SQLite regression tests, two database-isolation checks, and a home-screen launch test, plus five cost-screen launch tests for AndroidX cards and Material add controls and the original generated example tests. Twelve pure pricing tests and five Results/help UI tests cover calculations, invalid input, database integration, and activity recreation. Complete UI workflows remain unverified.
 
 ## Build status
 
-The build uses Android Gradle Plugin 8.13.2, Gradle 8.13, Java 17, and compile SDK 36. Dependency resolution uses Google Maven and Maven Central. The Android Support Library is retained for a separate AndroidX migration. Minimum SDK 19 and target SDK 26 remain unchanged; minimum-version support and Play Store eligibility are not established by these settings.
+The build uses Android Gradle Plugin 8.13.2, Gradle 8.13, Java 17, and compile SDK 36. Dependency resolution uses Google Maven and Maven Central. The app uses AndroidX and Material Components versions pinned to retain the declared minimum SDK 19; these are deliberately compatible versions rather than the newest releases. Jetifier is disabled. Minimum SDK 19 and target SDK 26 remain unchanged; minimum-version support and Play Store eligibility are not established by these settings.
 
 GitHub Actions builds with Java 17 and runs database, home-screen, and Results/help tests on Android 8.0 (API 26) and Android 17 (API 37) emulators. It also validates the Gradle wrapper and launcher failure handling. Passing this workflow establishes only the behavior covered by these tests; complete workflows, physical-device compatibility, and release readiness remain unverified. See [build and validation notes](docs/BUILD_VALIDATION.md).
 

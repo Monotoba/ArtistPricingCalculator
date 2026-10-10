@@ -47,6 +47,14 @@ jobs:
         run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
       - name: Build application and regression tests
         run: ./gradlew --no-daemon --stacktrace assembleDebug assembleDebugAndroidTest testDebugUnitTest
+      - name: Verify AndroidX runtime dependencies
+        run: |
+          mkdir -p app/build/reports/dependencies
+          ./gradlew --no-daemon :app:dependencies --configuration debugRuntimeClasspath > app/build/reports/dependencies/debug-runtime.txt
+          if grep -Eq 'com\.android\.support[:.]' app/build/reports/dependencies/debug-runtime.txt; then
+            echo 'An old Android Support Library remains in the runtime graph.' >&2
+            exit 1
+          fi
       - name: Enable emulator acceleration
         run: |
           sudo chmod 666 /dev/kvm

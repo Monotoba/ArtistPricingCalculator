@@ -2,8 +2,8 @@ package com.example.randy.artistpricingcalculator;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data.Item;
 import com.example.randy.artistpricingcalculator.com.example.randy.artistpricingcalculator.data.ItemContract;
@@ -28,7 +28,7 @@ public class ItemDbHelperTest {
     public void setUp() {
         // Prefix all database names in the writable app context to isolate test data.
         context = new DatabaseTestContext(
-                InstrumentationRegistry.getTargetContext(), "regression_");
+                InstrumentationRegistry.getInstrumentation().getTargetContext(), "regression_");
         context.deleteDatabase(ItemDbHelper.DATABASE_NAME);
         helper = new ItemDbHelper(context);
         helper.getWritableDatabase().delete(ItemContract.ItemEntry.TABLE_NAME, null, null);
@@ -48,7 +48,7 @@ public class ItemDbHelperTest {
     public void helperDatabaseUsesAnIsolatedPath() {
         String actualPath = helper.getWritableDatabase().getPath();
         assertEquals(context.getDatabasePath(ItemDbHelper.DATABASE_NAME).getAbsolutePath(), actualPath);
-        assertNotEquals(InstrumentationRegistry.getTargetContext()
+        assertNotEquals(InstrumentationRegistry.getInstrumentation().getTargetContext()
                 .getDatabasePath(ItemDbHelper.DATABASE_NAME).getAbsolutePath(), actualPath);
     }
 

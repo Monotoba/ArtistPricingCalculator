@@ -1,10 +1,10 @@
 # Roadmap to an initial alpha
 
-Status: work in progress. Modern build validation, database regression coverage, limited Android 8/17 runtime checks, and pricing calculations have been added; complete workflows and release readiness remain unfinished. No delivery date is committed.
+Status: work in progress. Modern build validation, AndroidX dependency migration, database regression coverage, limited Android 8/17 runtime checks, and pricing calculations have been added; complete workflows and release readiness remain unfinished. No delivery date is committed.
 
 ## 1. Reproduce the build
 
-Establish a working Java/Gradle/Android SDK environment. Evaluate repository and dependency availability, then make the smallest necessary build changes. Record a repeatable build command and add CI once it succeeds. Validate any toolchain migration with tests.
+Establish a working Java/Gradle/Android SDK environment. Evaluate repository and dependency availability, then make the smallest necessary build changes. The Java 17 / Gradle 8.13 / AGP 8.13.2 build is now repeatable in CI. AndroidX dependencies are pinned to retain minimum SDK 19, with database, pricing, Results/help, home-screen, and five cost-screen regression checks. Target SDK remains 26; raising it requires another compatibility step.
 
 ## 2. Stabilize item storage
 
