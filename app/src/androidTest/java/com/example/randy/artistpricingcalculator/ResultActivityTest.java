@@ -150,4 +150,30 @@ public class ResultActivityTest {
             }
         });
     }
+
+    @Test public void addingAndUpdatingStoredMaterialsChangesVisibleResults() {
+        helper.addItem(new Item(ItemContract.ITEM_TYPE_MATERIALS, "Test canvas", 10));
+        launch(ResultActivity.class);
+        instrumentation.runOnMainSync(new Runnable() {
+            @Override public void run() {
+                assertEquals("30.00", text(R.id.tv_retial_price));
+            }
+        });
+        Item item = helper.getItemsByType(ItemContract.ITEM_TYPE_MATERIALS).get(0);
+        item.mValue = 20;
+        helper.updateItem(item);
+        instrumentation.runOnMainSync(new Runnable() {
+            @Override public void run() {
+                ((ResultActivity) activity).doCalc();
+                assertEquals("60.00", text(R.id.tv_retial_price));
+            }
+        });
+        helper.deleteItemById(item.mID);
+        instrumentation.runOnMainSync(new Runnable() {
+            @Override public void run() {
+                ((ResultActivity) activity).doCalc();
+                assertEquals("0.00", text(R.id.tv_retial_price));
+            }
+        });
+    }
 }
