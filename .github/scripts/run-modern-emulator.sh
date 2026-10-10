@@ -21,8 +21,8 @@ emulator -avd modern -port 5554 -no-window -gpu software \
   -no-snapshot -noaudio -no-boot-anim > "$report_dir/emulator.log" 2>&1 &
 emulator_pid=$!
 cleanup() {
-  adb -s emulator-5554 logcat -d > "$report_dir/logcat.txt" 2>&1 || true
-  adb -s emulator-5554 emu kill || true
+  timeout 15s adb -s emulator-5554 logcat -d > "$report_dir/logcat.txt" 2>&1 || true
+  timeout 10s adb -s emulator-5554 emu kill || true
   kill "$emulator_pid" 2>/dev/null || true
 }
 trap cleanup EXIT
@@ -32,9 +32,9 @@ trap cleanup EXIT
 deadline=$((SECONDS + 600))
 ready=false
 while (( SECONDS < deadline )); do
-  if [[ $(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\r') == 1 ]] \
-      && adb -s emulator-5554 shell service check input 2>/dev/null | grep -q '^Service input: found' \
-      && adb -s emulator-5554 shell service check package 2>/dev/null | grep -q '^Service package: found'; then
+  if [[ $(timeout 10s adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\r') == 1 ]] \
+      && timeout 10s adb -s emulator-5554 shell service check input 2>/dev/null | grep -q '^Service input: found' \
+      && timeout 10s adb -s emulator-5554 shell service check package 2>/dev/null | grep -q '^Service package: found'; then
     ready=true
     break
   fi
